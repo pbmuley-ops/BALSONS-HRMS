@@ -3,9 +3,9 @@
 | Field | Value |
 |---|---|
 | Document ID | BAL-XBR-001 |
-| Version | 0.1.0-DRAFT |
-| Status | PROPOSED — bridge source code not in workspace |
-| Constraint | Zero-CSV; respect `ExportPortalDataDirectly` → `balsons_data.js` |
+| Version | 0.2.0-DRAFT |
+| Status | PROPOSED — enriched from SYSTEM SPECIFICATION; VBA source still absent |
+| Constraint | Zero-CSV; `modBridgeEngine` / `ExportPortalDataDirectly` → `balsons_data.js` |
 
 ---
 
@@ -18,18 +18,32 @@ Define the controlled synchronization path between the **Master Excel Workbook**
 ## 2. Operating Requirement (mandated)
 
 ```text
-Excel Workbook
-    ↓
-VBA: ExportPortalDataDirectly
-    ↓
-balsons_data.js
-    ↓
-HTML Application (validate → state → UI)
+Excel Workbook  (BALSONS ERP & PAYROLL 2026.xlsm)
+        ↓
+VBA module modBridgeEngine
+        ↓
+Macro: ExportPortalDataDirectly  (ALT + F8)
+        ↓
+balsons_data.js   (zero-CSV)
+        ↓
+portal.html refresh → validate → state → UI
 ```
 
 - **No CSV** intermediate format
 - Direct Excel-to-HTML synchronization model
 - Exact sheet names and column positions preserved via mapping objects
+- Operator workflow: update Excel → run macro → refresh browser
+
+### Employee export scan (spec)
+
+- Sheet: `EMPLOYEE DATABASE`
+- Rows: 2 → `LastRow`
+- Compiled into JavaScript objects inside `balsons_data.js`
+
+### Month discovery (spec)
+
+- Dynamically discover sheets whose names include year identifiers (`25`, `26`, …)
+- Examples observed in spec text: `MAY-26`, `JUNE 26` (hyphen and space variants)
 
 ---
 
@@ -57,10 +71,11 @@ Audit
 
 | Component | Location | Responsibility |
 |---|---|---|
-| Master Workbook | `excel/` (placement decision pending) | SoR for employees, months, payroll formulas, payslip template |
-| VBA Bridge | Inside workbook | Export/import routines; `ExportPortalDataDirectly` |
-| `balsons_data.js` | Application root or generated path | Sync payload consumed by browser |
-| Bridge module | `js/bridge/` | Load, parse, validate payload; invoke write services |
+| Master Workbook | Co-located runtime folder / `excel/` in source | SoR: employees, months, payroll formulas |
+| VBA `modBridgeEngine` | Inside `.xlsm` | Cell parse + JS generation |
+| `ExportPortalDataDirectly` | Macro | Export to `balsons_data.js` |
+| `balsons_data.js` | Same folder as `portal.html` | Sync payload |
+| Bridge module | `js/bridge/` | Load, parse, validate payload; write orchestration |
 | Excel Data Service | `js/services/` | Domain-facing sync API |
 | Validation Engine | `js/validation/` | Structural + domain validation |
 | Audit Service | `js/services/` | Record sync/write/unlock events |

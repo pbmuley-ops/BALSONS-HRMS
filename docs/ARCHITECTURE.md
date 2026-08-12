@@ -3,10 +3,11 @@
 | Field | Value |
 |---|---|
 | Document ID | BAL-ARC-001 |
-| Version | 0.1.0-DRAFT |
+| Version | 0.2.0-DRAFT |
 | Status | PROPOSED — pending Architecture Review |
 | Governance | BEDS v3.0 layered separation |
 | Authority | Excel workbook = payroll source of truth |
+| Spec ingested | `docs/SYSTEM_SPECIFICATION.md` (2026-08-12) |
 
 ---
 
@@ -100,51 +101,53 @@ React, Angular, Vue, jQuery, Bootstrap, Node.js Runtime, PHP, ASP.NET, Django, L
 ## 5. Proposed Project Structure
 
 ```text
-BALSONS-ERP-PAYROLL-2026/
+BALSONS-ERP-PAYROLL-2026/          # source / engineering tree
 │
-├── index.html
+├── portal.html                    # SYSTEM SPEC entry (or index.html alias)
 │
 ├── assets/
-│   ├── logo/
-│   └── vendor/          # SheetJS, Chart.js, fonts — offline
+│   ├── logo/                      # BALSONS LOGO MAIN NEW.png
+│   └── vendor/                    # SheetJS, Chart.js, fonts — offline
 │
 ├── css/
-│   ├── tokens.css       # Brand + theme tokens
+│   ├── tokens.css
 │   ├── base.css
 │   ├── layout.css
 │   ├── components.css
 │   ├── modules.css
-│   └── print.css        # A4 salary slip / reports
+│   └── print.css
 │
 ├── js/
-│   ├── core/            # bootstrap, events, errors, logger
-│   ├── services/        # domain services (employee, payroll, …)
-│   ├── validation/      # reusable validation engine
-│   ├── state/           # application state store
-│   ├── bridge/          # VBA / balsons_data.js integration
-│   ├── modules/         # feature modules (UI orchestration only)
-│   ├── reports/         # report generators
-│   └── utilities/       # pure helpers (dates, money, format)
+│   ├── core/
+│   ├── services/
+│   ├── validation/
+│   ├── state/
+│   ├── bridge/                    # balsons_data.js loader + sync
+│   ├── modules/
+│   ├── reports/
+│   └── utilities/
 │
-├── excel/               # Master workbook placement (decision pending)
-│
-├── docs/                # BEDS documentation package
-│
-├── backup/              # Backup packages / restore staging
-│
-├── reports/             # Generated report outputs (runtime)
-│
-├── release/             # Release manifests / approval artifacts
-│
+├── excel/                         # Master .xlsm in source control policy TBD
+├── docs/
+├── backup/
+├── reports/
+├── release/                       # co-located operator package output
+├── scripts/
 └── tests/
-    ├── functional/
-    ├── integration/
-    ├── validation/
-    ├── security/
-    ├── performance/
-    ├── offline/
-    └── regression/
 ```
+
+### Runtime operator package (SYSTEM SPECIFICATION mandatory)
+
+When deployed for operators, these files **must share one folder**:
+
+```text
+portal.html
+BALSONS LOGO MAIN NEW.png
+balsons_data.js
+BALSONS ERP & PAYROLL 2026.xlsm
+```
+
+Engineering tree may stay modular if `release/` packaging produces that co-located folder.
 
 Structure may be adjusted only when justified by architecture review evidence.
 
@@ -152,26 +155,42 @@ Structure may be adjusted only when justified by architecture review evidence.
 
 ## 6. Module Map
 
+### 6.1 Spec tabs (`portal.html` hashes)
+
+| Hash | Capability |
+|---|---|
+| `#dashboard` | KPI cards + Chart.js analytics |
+| `#employee-master` | Employee table + `#employeeModal` |
+| `#attendance` | Month selector, grid, Save to Excel, New Month Sheet |
+| `#payroll` | Compute Payroll + register preview |
+| `#documents` | HR docs / slips generator + `#documentPrintArea` |
+| `#reports` | Registers & analytics print views |
+| `#settings` | Company profile + statutory codes |
+
+### 6.2 Enterprise groups (BEDS — remain mandatory)
+
 ### COMMAND CENTER
-- Dashboard — KPIs, period status, sync health
+- Dashboard — KPIs, period status, sync health (`#dashboard`)
 - Action Center — pending approvals / unlocks / reviews
 - Notifications — system and workflow alerts
 
 ### WORKFORCE
-- Employee Master — CRUD against Excel `EMPLOYEE DATABASE` via services
-- Attendance — month sheet entry / review
-- Payroll — calculation review driven by workbook logic
-- Salary Slips — generation from `PAYLIP TEMPLATE` mappings
-- HR Documents — templated employee documents
+- Employee Master — CRUD against Excel `EMPLOYEE DATABASE` (`#employee-master`)
+- Attendance — month sheet entry / review (`#attendance`)
+- Payroll — workbook-driven calculation review (`#payroll`)
+- Salary Slips — via Documents tab salary-slip mode (`#documents`)
+- HR Documents — templated certificates (`#documents`)
 
 ### STATUTORY
-- PF, ESIC, Compliance — reports and rule configuration surfaces
+- PF, ESIC, Compliance — reports + settings statutory fields
 
 ### REPORTS
-- Attendance, Payroll, Salary, OT, Advances, PF/ESIC, Management Analytics
+- Attendance, Wage, Salary, Employee List, OT, Advances, PF/ESIC (`#reports`)
+- Management Analytics — dashboard charts
 
 ### ADMINISTRATION
-- Users, Roles, Configuration, Excel Sync, Audit, Backup / Restore
+- Users, Roles, Configuration (`#settings` + extended admin screens)
+- Excel Sync, Audit, Backup / Restore
 
 ### SYSTEM
 - Search, Help, About
@@ -352,11 +371,15 @@ Targets: see `docs/NFR.md`.
 
 ## 16. Open Architecture Items
 
-1. Freeze workbook formula catalogue after binary inspection.
-2. Confirm SheetJS role vs pure VBA for write-back.
-3. Confirm multi-user locking protocol.
-4. Confirm auth storage mechanism for offline enterprise use.
-5. Align BEDS control IDs with primary BEDS v3.0 text when supplied.
+1. Freeze workbook formula catalogue after binary inspection (`BALSONS ERP & PAYROLL 2026.xlsm`).
+2. Resolve EMPLOYEE F–Q **13 fields vs 12 columns** mismatch (see EXCEL_MAPPING).
+3. Confirm month sheet naming variants (`MAY-26` vs `JUNE 26`) from live discovery.
+4. Confirm SheetJS role vs pure VBA for write-back (`modBridgeEngine`).
+5. Bootstrap vs native CSS — prefer native per tech lock; exception only if approved.
+6. Confirm multi-user locking protocol.
+7. Confirm auth storage mechanism for offline enterprise use.
+8. Align BEDS control IDs with primary BEDS v3.0 text when supplied.
+9. Release packaging to satisfy co-location rule without abandoning modular source.
 
 ---
 

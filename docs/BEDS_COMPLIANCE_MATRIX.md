@@ -3,8 +3,8 @@
 | Field | Value |
 |---|---|
 | Document ID | BAL-BEDS-001 |
-| Version | 0.1.0-DRAFT |
-| Status | MAPPING DRAFT — primary BEDS text NOT in workspace |
+| Version | 0.2.0-DRAFT |
+| Status | MAPPING DRAFT — SYSTEM SPEC ingested; primary BEDS text still NOT in workspace |
 | Rule | Do **not** mark PASS without implementation evidence |
 
 ---
@@ -111,9 +111,10 @@ When the official BEDS v3.0 text is supplied, this matrix must be reconciled to 
 |---|---|---|---|---|---|---|---|
 | BEDS-APP-01 | Payroll lifecycle states | Designed | ARCHITECTURE | payroll | Functional | PENDING | High |
 | BEDS-APP-02 | Finalize lock + authorized unlock | Designed | SECURITY / ARCH | payroll | Security+functional | PENDING | High |
-| BEDS-APP-03 | Employee sheet exact name/columns | Mapping partial | EXCEL_MAPPING | employee | Structure validation | PARTIAL | Critical until verified |
-| BEDS-APP-04 | Direct Excel↔HTML sync via VBA/`balsons_data.js` | Bridge design | EXCEL_BRIDGE_DESIGN | bridge | Integration | FAIL | **Critical** — artifacts missing |
-| BEDS-APP-05 | Salary slip / document generation | Spec only | UI_UX / DD | slips/hrdocs | Functional | PENDING | Medium |
+| BEDS-APP-03 | Employee sheet exact name/columns | A–E, AZ frozen; F–Q conflict documented | EXCEL_MAPPING | employee | Structure validation | PARTIAL | Critical until F–Q resolved |
+| BEDS-APP-04 | Direct Excel↔HTML sync via VBA/`balsons_data.js` | Spec protocol documented; artifacts missing | EXCEL_BRIDGE_DESIGN / SYSTEM_SPECIFICATION | bridge | Integration | PARTIAL | High — binary/sample still missing |
+| BEDS-APP-05 | Salary slip / document generation | Document types + print pane specified | UI_UX / DD / SYSTEM_SPEC | documents | Functional | PARTIAL | Medium |
+| BEDS-UI-06 | Native CSS Grid/Flexbox (no Bootstrap) | Spec mentions Bootstrap; lock forbids | UI_UX_SPEC decision | css | Dependency audit | PARTIAL | Medium — exception decision required |
 | BEDS-APP-06 | Browser print/PDF | Specced | print.css | slips | Print test | PENDING | Medium |
 | BEDS-APP-07 | Do not invent payroll formulas | Policy enforced in docs | EXCEL_MAPPING | payroll service | Review | PENDING | Critical |
 | BEDS-APP-08 | Command Center / Workforce / Statutory / Reports / Admin / System | Module map | ARCHITECTURE | modules | Structure | PENDING | Medium |
@@ -135,8 +136,8 @@ When the official BEDS v3.0 text is supplied, this matrix must be reconciled to 
 | Status | Count | Notes |
 |---|---|---|
 | PASS | **0** | No implementation evidence |
-| PARTIAL | 8 | Docs / mandated employee columns / scaffolds |
-| FAIL | 2 | Workbook SoR absent; bridge artifacts absent |
+| PARTIAL | Increased | Spec ingested; employee columns / bridge protocol / UI docs improved |
+| FAIL | Reduced | Workbook binary still absent (SoR evidence) |
 | PENDING | Majority | Awaiting build + verification |
 | NOT APPLICABLE | 0 | Pending official BEDS text reconciliation |
 

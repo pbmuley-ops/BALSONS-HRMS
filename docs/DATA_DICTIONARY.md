@@ -3,9 +3,10 @@
 | Field | Value |
 |---|---|
 | Document ID | BAL-DD-001 |
-| Version | 0.1.0-DRAFT |
-| Status | PARTIAL — workbook fields PENDING verification |
-| Rule | Do not invent Excel formulas or unobserved columns |
+| Version | 0.2.0-DRAFT |
+| Status | PARTIAL — enriched from SYSTEM SPECIFICATION; workbook binary PENDING |
+| Sources | `docs/SYSTEM_SPECIFICATION.md`, project mandate |
+| Rule | Do not invent Excel formulas or unobserved column letters |
 
 ---
 
@@ -13,14 +14,14 @@
 
 | Convention | Meaning |
 |---|---|
-| `PENDING` | Not yet observed in workbook |
-| `MANDATED` | Required by project instructions; must verify |
+| `PENDING` | Not yet observed in workbook binary |
+| `MANDATED` | Required by SYSTEM SPECIFICATION / instructions |
 | `APP` | Application-owned (not Excel SoR) |
 | `EXCEL` | Authoritative in master workbook |
 | `CALC` | Calculated — formula must come from workbook |
 | `CONFIG` | Configurable business rule |
 
-Logical names are stable. Physical Excel columns are maintained only in `docs/EXCEL_MAPPING.md` and mapping objects (`EMPLOYEE_COLUMNS`, etc.).
+Logical names are stable. Physical Excel columns live only in `docs/EXCEL_MAPPING.md` and mapping objects.
 
 ---
 
@@ -28,87 +29,98 @@ Logical names are stable. Physical Excel columns are maintained only in `docs/EX
 
 **Excel source sheet (mandated):** `EMPLOYEE DATABASE`
 
+### 2.1 Frozen columns
+
 | Logical Field | Type | Required | Source | Excel Column | Notes |
 |---|---|---|---|---|---|
-| employeeCode | string | Y | EXCEL | A | Unique key |
-| name | string | Y | EXCEL | B | |
-| designation | string | Y | EXCEL | C | |
-| dateOfJoining | date | Y | EXCEL | D | Format PENDING |
-| mobile | string | Y | EXCEL | E | Validation rules PENDING |
-| status | string/enum | Y | EXCEL | AZ | Active/Inactive values PENDING |
-| *(additional master fields)* | mixed | TBD | EXCEL | F–AY, BA+ | **PENDING workbook inspection** |
+| employeeCode | string | Y | EXCEL | A | e.g. `BAL-EMP001` |
+| name | string | Y | EXCEL | B | Full Name |
+| designation | string/enum | Y | EXCEL | C | `MECH`, `ELE`, `HELPER`, `ADMIN` |
+| dateOfJoining | date | Y | EXCEL | D | DOJ |
+| mobile | string | Y | EXCEL | E | |
+| status | enum | Y | EXCEL | AZ (52) | `Active` / `Inactive` |
 
-**Constraints (known):**
+### 2.2 Demographic & statutory fields (F–Q range per specification)
 
-- Sheet name exactly `EMPLOYEE DATABASE`
-- Columns A–E and AZ positions must not be altered, reordered, renamed, or shifted
-- Duplicate `employeeCode` must be rejected by validation engine
+| Logical Field | Type | Required | Source | Excel Column | Notes |
+|---|---|---|---|---|---|
+| gender | string/enum | TBD | EXCEL | F–Q TBD | |
+| dateOfBirth | date | TBD | EXCEL | F–Q TBD | DOB |
+| maritalStatus | string/enum | TBD | EXCEL | F–Q TBD | |
+| fatherName | string | TBD | EXCEL | F–Q TBD | |
+| physicallyChallenged | string/boolean | TBD | EXCEL | F–Q TBD | |
+| permanentAddress | string | TBD | EXCEL | F–Q TBD | Address |
+| city | string | TBD | EXCEL | F–Q TBD | |
+| state | string | TBD | EXCEL | F–Q TBD | |
+| postalCode | string | TBD | EXCEL | F–Q TBD | |
+| pfNumber | string | TBD | EXCEL | F–Q TBD | |
+| esiNumber | string | TBD | EXCEL | F–Q TBD | |
+| aadharNumber | string | TBD | EXCEL | F–Q TBD | Aadhar Card No |
+| grossSalary | number | TBD | EXCEL | F–Q TBD | |
+
+**Open issue DD-01:** Specification lists **13** demographic/statutory fields for columns **F–Q (12 columns)**. Exact letter assignment is blocked until workbook header inspection.
+
+### 2.3 UI surface
+
+Employee Master tab (`#employee-master`) + modal `#employeeModal` bind to these fields. Portal saves must write back to `EMPLOYEE DATABASE` rows (no CSV).
 
 ---
 
 ## 3. Monthly Attendance Entity
 
-**Excel source:** month sheets (examples from instructions: `MAY-26`, `JUNE-26`)
+**Excel source:** discovered month sheets with year identifiers (examples: `MAY-26`, `JUNE 26`)
 
-| Logical Field | Type | Required | Source | Mapping | Notes |
+| Logical Field | Type | Required | Source | UI Binding | Notes |
 |---|---|---|---|---|---|
-| monthKey | string | Y | EXCEL sheet name | sheet | Pattern PENDING confirmation |
-| employeeCode | string | Y | EXCEL | MONTH_COLUMNS | Must exist in employee master |
-| attendanceDays / marks | mixed | Y | EXCEL | PENDING | Structure unknown |
-| overtimeUnits | number | N | EXCEL | PENDING | |
-| leave / absent markers | mixed | N | EXCEL | PENDING | |
-| reviewStatus | enum | APP/EXCEL | PENDING | OPEN→REVIEW pipeline | |
+| monthKey | string | Y | EXCEL sheet name | Month selector | Exact name; do not normalize |
+| employeeCode | string | Y | EXCEL | Row identity | Active employees in grid |
+| presentDays | number | Y | EXCEL | Present Days | |
+| weeklyOffs | number | N | EXCEL | WO | |
+| paidLeaves | number | N | EXCEL | PL | |
+| overtimeHours | number | N | EXCEL | OT Hours | |
+| advanceAmount | number | N | EXCEL | Advances (₹) | |
+| reviewStatus | enum | APP/EXCEL | PENDING | Lifecycle | |
 
-**Status:** Full attribute list **BLOCKED** until workbook inspection.
+Full Excel column letters: **PENDING** workbook audit.
 
 ---
 
 ## 4. Payroll Entity
 
-Calculated fields required by specification. **Formulas must be extracted from the workbook — not invented.**
+Computed by Excel formulas when “Compute Payroll” runs. HTML register preview columns:
 
 | Logical Field | Category | Source | Formula Status |
 |---|---|---|---|
-| basic | Earnings | EXCEL/CALC | PENDING extraction |
+| employeeCode | Key | EXCEL | |
+| name | Display | EXCEL | |
+| payableDays | Attendance-derived | EXCEL/CALC | PENDING |
+| basic | Earnings | EXCEL/CALC | PENDING |
 | hra | Earnings | EXCEL/CALC | PENDING |
 | da | Earnings | EXCEL/CALC | PENDING |
-| taCa | Earnings | EXCEL/CALC | PENDING |
-| oa | Earnings | EXCEL/CALC | PENDING |
-| lta | Earnings | EXCEL/CALC | PENDING |
-| overtimePay | Earnings | EXCEL/CALC | PENDING |
-| grossEarnings | Aggregate | EXCEL/CALC | PENDING |
+| totalEarnings | Aggregate | EXCEL/CALC | PENDING |
 | pf | Deduction | EXCEL/CALC | PENDING |
 | esic | Deduction | EXCEL/CALC | PENDING |
 | advance | Deduction | EXCEL | PENDING |
-| pt | Deduction | EXCEL/CALC | PENDING |
 | totalDeductions | Aggregate | EXCEL/CALC | PENDING |
 | netPayable | Aggregate | EXCEL/CALC | PENDING |
 | monthKey | Key | EXCEL | |
-| employeeCode | Key | EXCEL | |
 | payrollStatus | Lifecycle | APP (+ Excel flag if present) | See §8 |
 
-Mapping object: `PAYROLL_FIELDS` (to be frozen post-audit).
+**Rule:** Do not invent formulas where workbook formulas already define business logic.
 
 ---
 
-## 5. Salary Slip Entity
+## 5. Dashboard Aggregates (APP derived from Excel data)
 
-**Template sheet (mandated name):** `PAYLIP TEMPLATE` (exact spelling)
-
-| Logical Field | Type | Source | Status |
-|---|---|---|---|
-| companyHeader / logo | display | CONFIG + assets | PENDING template audit |
-| employeeCode | string | Employee + Payroll | PENDING field cells |
-| employeeName | string | Employee | PENDING |
-| designation | string | Employee | PENDING |
-| monthKey | string | Payroll | PENDING |
-| earnings lines | collection | Payroll | PENDING |
-| deduction lines | collection | Payroll | PENDING |
-| gross / net | number | Payroll | PENDING |
-| bank / statutory IDs | string | Employee/Config | PENDING |
-| printLayout | A4 | CSS print | Specced in UI_UX |
-
-Mapping object: `PAYSLIP_FIELDS`.
+| Metric | Definition (spec) |
+|---|---|
+| employeesActive / total | Active workforce count alongside total records |
+| payrollCost | Total net payable (₹) |
+| attendanceEfficiency | Overall attendance % |
+| otSummary | Cumulative OT hours |
+| pfEsicSummary | Combined statutory deductions |
+| payrollTrend12m | Last 12 months cost series (Chart.js) |
+| departmentDistribution | Counts for MECH / ELE / HELPER / ADMIN |
 
 ---
 
@@ -116,16 +128,51 @@ Mapping object: `PAYSLIP_FIELDS`.
 
 | Logical Field | Type | Source | Notes |
 |---|---|---|---|
-| documentType | enum | CONFIG | Offer, experience, etc. — catalogue PENDING |
-| employeeCode | string | Employee | Substitution key |
-| templateId | string | CONFIG | |
-| substitutions | map | Employee + Config | Tokens resolved at generation |
+| documentType | enum | CONFIG | appointment, joining, ctcAnnexure, salarySlip, experience, relieving, noDue, idCard |
+| generationMode | enum | APP | Individual / Bulk (All Active) |
+| employeeCode | string | Employee | Required for Individual |
+| salaryMonth | string | Month sheets | Required for salary slips |
+| contentHtml | html | APP template + substitutions | `#documentPrintArea`, `contenteditable` |
 | generatedAt | datetime | APP | Audit |
 | generatedBy | userId | APP | Audit |
 
 ---
 
-## 7. Audit Entity
+## 7. Report Entity
+
+Supported report kinds (spec):
+
+- Attendance Registers
+- Wage Registers
+- Salary Registers
+- Employee Lists
+- OT Reports
+- Advance Reports
+- PF & ESIC Reports
+
+Output: on-screen table + browser-native PDF print — **no CSV**.
+
+---
+
+## 8. Configuration Entity
+
+| Logical Field | Type | Source | Notes |
+|---|---|---|---|
+| companyName | string | CONFIG | Settings tab |
+| registeredAddress | string | CONFIG | |
+| contactTelephone | string | CONFIG | |
+| contactEmail | string | CONFIG | |
+| gstin | string | CONFIG | Statutory placeholder |
+| pan | string | CONFIG | |
+| pfCode | string | CONFIG | |
+| esicCode | string | CONFIG | |
+| themeDefault | enum | APP | light/dark via `data-theme` + localStorage preference path |
+| rolePermissionMatrix | object | APP | RBAC (BEDS-SEC) |
+| syncSettings | object | APP | Bridge paths |
+
+---
+
+## 9. Audit Entity
 
 | Logical Field | Type | Required | Source |
 |---|---|---|---|
@@ -137,58 +184,13 @@ Mapping object: `PAYSLIP_FIELDS`.
 | action | string | Y | APP |
 | entityType | string | Y | APP |
 | entityKey | string | Y | APP |
-| month | string | N | For payroll actions |
-| reason | string | Conditional | Required for unlock |
-| before | json | N | Snapshot |
-| after | json | N | Snapshot |
+| month | string | N | Payroll actions |
+| reason | string | Conditional | Unlock required |
+| before / after | json | N | Snapshots |
 | result | enum | Y | SUCCESS / DENIED / FAILED |
 | correlationId | string | Y | Sync / transaction |
 
-**Unlock-specific mandatory fields:** USER, ROLE, TIMESTAMP, MONTH, REASON, ACTION.
-
----
-
-## 8. Configuration Entity
-
-| Logical Field | Type | Source | Notes |
-|---|---|---|---|
-| companyProfile | object | CONFIG/EXCEL | Name, address, logo path |
-| themeDefault | enum | APP | light/dark |
-| statutoryPf | object | CONFIG | Rates/limits — not hardcoded permanently |
-| statutoryEsic | object | CONFIG | |
-| statutoryPt | object | CONFIG | Jurisdiction rules PENDING |
-| overtimeRules | object | CONFIG/EXCEL | Must align with workbook |
-| payrollLifecycleFlags | object | APP | Month status |
-| rolePermissionMatrix | object | APP | RBAC |
-| syncSettings | object | APP | Bridge paths / verification |
-| backupSettings | object | APP | Retention |
-
-All configurable business rules must be editable only by authorized roles and audited.
-
----
-
-## 9. User / Session Entities (APP)
-
-### User
-
-| Field | Type | Notes |
-|---|---|---|
-| userId | string | |
-| displayName | string | |
-| role | enum | See SECURITY_DESIGN |
-| status | enum | Active/Disabled |
-| passwordHash / secretRef | secret | Never plaintext in code or docs |
-| lastLoginAt | datetime | |
-
-### Session
-
-| Field | Type | Notes |
-|---|---|---|
-| sessionId | string | |
-| userId | string | |
-| role | string | |
-| issuedAt / expiresAt | datetime | |
-| theme | enum | persisted preference |
+Unlock mandatory: USER, ROLE, TIMESTAMP, MONTH, REASON, ACTION.
 
 ---
 
@@ -196,19 +198,17 @@ All configurable business rules must be editable only by authorized roles and au
 
 | Field | Type | Source | Status |
 |---|---|---|---|
-| exportedAt | datetime | VBA | PENDING schema |
-| workbookName | string | VBA | PENDING |
-| employees | array | EMPLOYEE DATABASE | PENDING |
-| months | array/object | Month sheets | PENDING |
-| payroll | array/object | Month/payroll ranges | PENDING |
+| employees | array | `EMPLOYEE DATABASE` rows 2..LastRow | Schema PENDING sample |
+| months | object/array | Discovered month sheets | PENDING |
+| payroll | object/array | Month calc ranges | PENDING |
 | config | object | Optional | PENDING |
-| checksum / version | string | VBA | Recommended |
+| meta.exportedAt / version | string | VBA | Recommended |
 
-Exact schema **PENDING** VBA/`balsons_data.js` delivery. Zero-CSV constraint applies.
+Generated by `modBridgeEngine` / `ExportPortalDataDirectly`. Zero-CSV.
 
 ---
 
-## 11. Month Lifecycle Status Values (APP)
+## 11. Month Lifecycle Status Values (APP — BEDS mandate)
 
 | Status | Description |
 |---|---|
@@ -228,10 +228,10 @@ Exact schema **PENDING** VBA/`balsons_data.js` delivery. Zero-CSV constraint app
 
 Any new logical field requires:
 
-1. Update to this dictionary
-2. Update to `EXCEL_MAPPING.md` if Excel-backed
-3. Validation rule
-4. Test case
-5. Changelog entry
+1. Update to this dictionary  
+2. Update to `EXCEL_MAPPING.md` if Excel-backed  
+3. Validation rule  
+4. Test case  
+5. Changelog entry  
 
 **No silent column shifts.**

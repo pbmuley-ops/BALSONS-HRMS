@@ -3,29 +3,32 @@
 | Field | Value |
 |---|---|
 | Document ID | BAL-INIT-001 |
-| Version | 0.1.0-DRAFT |
+| Version | 0.2.0-DRAFT |
 | Date | 2026-08-12 |
-| Status | INITIALIZATION COMPLETE — WORKBOOK / BEDS SOURCE BLOCKED |
+| Status | INITIALIZATION UPDATED — SYSTEM SPEC INGESTED; WORKBOOK / BEDS PRIMARY STILL BLOCKED |
 | Classification | Internal — Architecture |
-| Governance baseline | BEDS v3.0 (text not present in workspace; mapping derived from task mandate) |
+| Governance baseline | BEDS v3.0 (primary text not present; mapping from mandate + SYSTEM SPECIFICATION) |
 | Application tech lock | HTML5, CSS3, Vanilla JS ES6+, SheetJS, IndexedDB, Chart.js, JSON, VBA, Microsoft Excel |
+| Spec file | `docs/SYSTEM_SPECIFICATION.md` |
 
 ---
 
 ## 1. Executive Summary
 
-The Cursor workspace for `BALSONS-HRMS` is a **greenfield repository**. At inspection time it contained only `README.md` (`# BALSONS-HRMS`) and git metadata. No Excel workbook, VBA modules, HTML/CSS/JS application, BEDS v3.0 document, or system specification files were present in the workspace, GitHub `main`, or accessible MCP sources.
+The Cursor workspace for `BALSONS-HRMS` began as a **greenfield repository** (README only). Architecture documentation was produced without inventing payroll formulas.
 
-Google Drive MCP is connected to this environment but **requires authentication in Cursor Desktop** and could not be used to retrieve authoritative references from this cloud agent session.
+**Update 2026-08-12:** The authoritative **INSTRUCTIONS / SYSTEM SPECIFICATION** was uploaded and ingested as `docs/SYSTEM_SPECIFICATION.md`. Excel mapping, data dictionary, UI/UX, bridge design, and architecture tab maps were updated from that text.
 
-This initialization phase therefore:
+Still missing / blocked:
 
-1. Completed a full **workspace audit** (empty application tree).
-2. Recorded a **blocked workbook audit** pending delivery of the authoritative `.xlsx` / `.xlsm`.
-3. Produced **architecture, security, data dictionary, Excel mapping, and BEDS compliance** documentation from the **task mandate** and known payroll specification constraints — **without inventing workbook formulas or altering any workbook structure**.
-4. Established the approved modular folder scaffold and documentation package for Architecture Review → Technical Design → Implementation.
+- BEDS v3.0 primary document
+- Master workbook `BALSONS ERP & PAYROLL 2026.xlsm` (binary)
+- VBA source / sample `balsons_data.js`
+- Logo asset `BALSONS LOGO MAIN NEW.png`
 
 **No application code, fake modules, placeholder UI, or invented payroll formulas were created.**
+
+Cloud Agent environment setup (openpyxl install) was validated and proposed for Save separately.
 
 ---
 
@@ -47,13 +50,11 @@ This initialization phase therefore:
 | `.git/*` | VCS | Version control | GitHub remote | Present | Non-authoritative | Traceability baseline | None |
 | BEDS v3.0 document | Missing | Enterprise governance baseline | — | **MISSING** | **Authoritative (required)** | **BLOCKED** | Indirect |
 | BALSONS ERP & PAYROLL 2026 workbook | Missing | Authoritative payroll data source | VBA bridge | **MISSING** | **Authoritative (required)** | ARC/APP | **BLOCKED** |
-| INSTRUCTIONS / SYSTEM SPECIFICATION | Missing | System specification | BEDS + workbook | **MISSING** | **Authoritative (required)** | All domains | **BLOCKED** |
-| VBA (`ExportPortalDataDirectly`, etc.) | Missing | Excel ↔ HTML bridge | Workbook | **MISSING** | Authoritative when supplied | ARC/ENG | **BLOCKED** |
+| INSTRUCTIONS / SYSTEM SPECIFICATION | Markdown | Tab-by-tab + Excel binding + ops rules | BEDS + workbook | **INGESTED** as `docs/SYSTEM_SPECIFICATION.md` | **Authoritative** | Unblocks SRS detail | High |
+| VBA (`modBridgeEngine`, `ExportPortalDataDirectly`) | Missing binary | Excel ↔ HTML bridge | Workbook | **MISSING** | Authoritative when supplied | ARC/ENG | **BLOCKED** |
 | `balsons_data.js` | Missing | Sync payload for HTML | VBA export | **MISSING** | Authoritative when supplied | ARC/ENG | **BLOCKED** |
-| HTML / CSS / JS application | Missing | Frontend | Local vendors | **MISSING** | To be built under tech lock | UI/ENG | Pending |
-| Tests | Missing | Verification | Spec | **MISSING** | Non-authoritative | SDLC | Pending |
-| Images / assets | Missing | Branding | — | **MISSING** | Non-authoritative | UI | Low |
-| Duplicate / obsolete files | N/A | — | — | None found | — | — | — |
+| `portal.html` / CSS / JS application | Missing | Frontend | Local vendors | **MISSING** | To be built under tech lock | UI/ENG | Pending |
+| `BALSONS LOGO MAIN NEW.png` | Missing | Branding | — | **MISSING** | Non-authoritative asset | UI | Medium |
 
 ### 2.3 Inventory conclusion
 
@@ -409,40 +410,42 @@ Summary counts (initialization):
 | ID | Issue | Blocking? |
 |---|---|---|
 | OI-001 | Deliver BEDS v3.0 document into workspace | Yes for final compliance PASS claims |
-| OI-002 | Deliver BALSONS ERP & PAYROLL 2026 workbook | Yes for Excel mapping / payroll logic |
-| OI-003 | Deliver SYSTEM SPECIFICATION / instructions file | Yes for SRS completeness |
-| OI-004 | Authenticate Google Drive MCP if files live in Drive | Conditional |
-| OI-005 | Confirm exact month sheet naming pattern and full column set | Yes for attendance module |
-| OI-006 | Extract and freeze VBA bridge API surface | Yes for bridge design finalization |
-| OI-007 | Confirm IndexedDB schema boundaries vs Excel authority | Architecture review |
-| OI-008 | Confirm logo assets and print header requirements | UI package |
+| OI-002 | Deliver `BALSONS ERP & PAYROLL 2026.xlsm` | Yes for formula/column freeze |
+| OI-003 | SYSTEM SPECIFICATION | **Resolved** — ingested as `docs/SYSTEM_SPECIFICATION.md` |
+| OI-004 | Authenticate Google Drive MCP if other files live in Drive | Conditional |
+| OI-005 | Confirm month sheet naming (`MAY-26` vs `JUNE 26`) from live workbook | Yes for attendance |
+| OI-006 | Extract VBA `modBridgeEngine` + sample `balsons_data.js` | Yes for bridge freeze |
+| OI-007 | Resolve EMPLOYEE F–Q **13 fields vs 12 columns** | Yes before employee write-back |
+| OI-008 | Bootstrap references in UI spec vs BEDS tech lock — prefer native CSS | Architecture decision |
+| OI-009 | Runtime co-location vs modular source packaging | Architecture decision |
+| OI-010 | Supply `BALSONS LOGO MAIN NEW.png` | UI package |
 
 ---
 
 ## 19. Required Decisions
 
-1. **Workbook placement:** Commit macro-enabled workbook under `excel/` (with license/security review) vs keep outside repo and sync via controlled path?
-2. **Write-back mechanism:** Pure VBA write service vs SheetJS write of a copy + operator-controlled merge — must align with existing `ExportPortalDataDirectly` model.
-3. **Auth store:** Local encrypted credential store vs OS/Windows-integrated auth for offline enterprise use (no cloud IdP assumed).
-4. **Multi-user concurrency:** Single-operator Excel file lock model vs explicit check-in/check-out protocol.
-5. **Configuration ownership:** Which rules live in Excel sheets vs application configuration JSON (still Excel-synced)?
-6. **Release gate owners:** Named approvers for security, performance, UAT, documentation under BEDS-GOV.
+1. **Workbook placement & packaging:** Co-located operator folder vs modular source + `release/` packager.
+2. **Write-back mechanism:** Exact `modBridgeEngine` write APIs vs SheetJS-assisted paths — inspect VBA before coding.
+3. **Auth store:** Local encrypted credential store vs OS-integrated auth (offline).
+4. **Bootstrap exception?** Spec mentions Bootstrap; tech lock forbids it — recommend native CSS Grid/Flexbox unless exception approved.
+5. **F–Q column map:** Resolve 13-vs-12 field mismatch from workbook headers.
+6. **Release gate owners:** Named approvers under BEDS-GOV.
 
 ---
 
 ## 20. Recommended Development Sequence
 
 ```text
-1. Supply authoritative references (BEDS, workbook, specification)
-2. Architecture Review (this package)
+1. Supply workbook binary + BEDS primary + logo (spec now available)
+2. Architecture Review (this package + SYSTEM SPECIFICATION)
 3. Workbook deep inspection → freeze EXCEL_MAPPING + payroll formula catalogue
-4. Technical Design (js module contracts, IndexedDB schema, bridge API)
+4. Technical Design (js contracts, IndexedDB schema, bridge API)
 5. Vendor offline assets (SheetJS, Chart.js, fonts) under assets/vendor/
-6. Core shell: tokens, layout, auth session stub, state bus (no fake payroll)
-7. Excel bridge + validation engine + employee sync (read-only first)
-8. Attendance → Payroll review (consume workbook formulas; do not reimplement blindly)
-9. Salary slips / print / PDF
-10. Statutory + Reports
+6. Core shell: tokens, layout, auth session, state bus (no fake payroll)
+7. Excel bridge + validation + employee sync (read-only first)
+8. Attendance → Payroll review (consume workbook formulas)
+9. Documents / print / PDF
+10. Reports + Settings
 11. Administration (RBAC, audit, backup)
 12. Security / performance / offline verification
 13. UAT
@@ -459,22 +462,24 @@ Summary counts (initialization):
 PROJECT INITIALIZATION STATUS
 
 Workspace Audit:       COMPLETE
-Workbook Audit:        BLOCKED
+Workbook Audit:        BLOCKED (binary missing; name/bindings known from SYSTEM SPEC)
 BEDS Mapping:          PARTIAL (mandate-based; primary text missing)
-Architecture:          PROPOSED
+Architecture:          PROPOSED (updated from SYSTEM SPECIFICATION)
 Security Design:       PROPOSED
-Excel Mapping:         PARTIAL
+Excel Mapping:         PARTIAL (A–E, AZ frozen; F–Q conflict; months/formulas pending)
 Testing Strategy:      PROPOSED
+System Specification:  INGESTED
 
 Critical Risks:
-1. Authoritative workbook not in workspace — formulas/columns cannot be frozen.
-2. BEDS v3.0 primary document not in workspace — full control IDs unverified.
-3. VBA bridge / balsons_data.js absent — sync contract incomplete.
+1. Authoritative .xlsm still absent — formulas cannot be frozen.
+2. BEDS v3.0 primary document still absent — official control IDs unverified.
+3. EMPLOYEE F–Q lists 13 fields for 12 columns — mapping unsafe until workbook headers checked.
+4. Bootstrap mentioned in UI spec conflicts with approved tech lock.
 
 Critical Decisions Required:
-1. How/where to supply and version the master Excel workbook.
-2. Exact write-back / sync model respecting ExportPortalDataDirectly.
-3. Offline authentication and multi-user Excel concurrency model.
+1. Native CSS vs Bootstrap exception.
+2. Release packaging for mandatory co-location of portal.html + xlsm + balsons_data.js + logo.
+3. Exact write-back API surface inside modBridgeEngine.
 
 NEXT APPROVED PHASE:
 Architecture Review → Technical Design → Implementation

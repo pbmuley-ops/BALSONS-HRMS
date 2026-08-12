@@ -3,8 +3,31 @@
 | Field | Value |
 |---|---|
 | Document ID | BAL-REL-001 |
-| Version | 0.1.0-DRAFT |
-| Status | Initialization documentation release only |
+| Version | 0.2.0-DRAFT |
+| Status | Documentation update — SYSTEM SPECIFICATION ingested |
+
+---
+
+## Release 0.2.0-DRAFT — 2026-08-12
+
+### Summary
+
+Ingested authoritative SYSTEM SPECIFICATION into `docs/` and refreshed Excel mapping, data dictionary, architecture tab map, UI/UX, and bridge design. **No application runtime implemented.**
+
+### Highlights
+
+- Tab map: Dashboard, Employee Master, Attendance, Payroll, Documents, Reports, Settings
+- Workbook name locked: `BALSONS ERP & PAYROLL 2026.xlsm`
+- VBA: `modBridgeEngine` / `ExportPortalDataDirectly`
+- Open mapping conflict: 13 demographic fields vs columns F–Q (12)
+- UI tech decision: prefer native CSS over Bootstrap references in spec
+
+### Still blocked
+
+- Workbook binary
+- BEDS v3.0 primary text
+- Sample `balsons_data.js` / VBA source
+- Logo asset
 
 ---
 
@@ -12,19 +35,13 @@
 
 ### Summary
 
-Project initialization and architecture documentation package for BALSONS ERP & PAYROLL 2026. **No application runtime implemented.**
+Project initialization and architecture documentation package. **No application runtime implemented.**
 
 ### Added
 
 - Complete Phase 19 documentation set under `docs/`
 - Test category folders under `tests/`
 - Reserved directories: `excel/`, `assets/`, `backup/`, `reports/`, `release/`
-
-### Known Blockers
-
-- Authoritative BEDS v3.0 document not in repository
-- Authoritative payroll workbook not in repository
-- VBA / `balsons_data.js` not in repository
 
 ### Not Included
 
