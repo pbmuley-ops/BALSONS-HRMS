@@ -75,7 +75,7 @@ When the official BEDS v3.0 text is supplied, this matrix must be reconciled to 
 | BEDS-UI-03 | Enterprise sidebar / breadcrumbs | Specced | layout.css | shell | UX review | PENDING | Low |
 | BEDS-UI-04 | Accessible forms / focus / keyboard | Specced | UI_UX_SPEC | components | A11y checks | PENDING | Medium |
 | BEDS-UI-05 | A4 print layouts | Specced | `css/print.css` | slips/reports | Print test | PENDING | Medium |
-| BEDS-UI-06 | Native CSS Grid/Flexbox (no Bootstrap) | Mandated | css/* | css | Dependency audit | PENDING | Medium |
+| BEDS-UI-06 | Native CSS Grid/Flexbox (no Bootstrap) | Spec mentions Bootstrap; lock forbids — prefer native CSS | UI_UX_SPEC decision | css | Dependency audit | PARTIAL | Medium — exception decision required |
 | BEDS-UI-07 | Minimal animation | Specced | UI_UX_SPEC | css | UX review | PENDING | Low |
 
 ### BEDS-SEC — Security
@@ -114,7 +114,6 @@ When the official BEDS v3.0 text is supplied, this matrix must be reconciled to 
 | BEDS-APP-03 | Employee sheet exact name/columns | A–E, AZ frozen; F–Q conflict documented | EXCEL_MAPPING | employee | Structure validation | PARTIAL | Critical until F–Q resolved |
 | BEDS-APP-04 | Direct Excel↔HTML sync via VBA/`balsons_data.js` | Spec protocol documented; artifacts missing | EXCEL_BRIDGE_DESIGN / SYSTEM_SPECIFICATION | bridge | Integration | PARTIAL | High — binary/sample still missing |
 | BEDS-APP-05 | Salary slip / document generation | Document types + print pane specified | UI_UX / DD / SYSTEM_SPEC | documents | Functional | PARTIAL | Medium |
-| BEDS-UI-06 | Native CSS Grid/Flexbox (no Bootstrap) | Spec mentions Bootstrap; lock forbids | UI_UX_SPEC decision | css | Dependency audit | PARTIAL | Medium — exception decision required |
 | BEDS-APP-06 | Browser print/PDF | Specced | print.css | slips | Print test | PENDING | Medium |
 | BEDS-APP-07 | Do not invent payroll formulas | Policy enforced in docs | EXCEL_MAPPING | payroll service | Review | PENDING | Critical |
 | BEDS-APP-08 | Command Center / Workforce / Statutory / Reports / Admin / System | Module map | ARCHITECTURE | modules | Structure | PENDING | Medium |

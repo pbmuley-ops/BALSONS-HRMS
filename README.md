@@ -6,19 +6,25 @@ BEDS v3.0-compliant offline-first HTML5 enterprise application, with **Excel as 
 
 **Initialization / Architecture phase.** Documentation is under `docs/`. Application runtime is **not** implemented yet.
 
-Start here: [`docs/PROJECT_INITIALIZATION_REPORT.md`](docs/PROJECT_INITIALIZATION_REPORT.md)
+Start here:
 
-## Authoritative references (required)
+- [`docs/PROJECT_INITIALIZATION_REPORT.md`](docs/PROJECT_INITIALIZATION_REPORT.md)
+- [`docs/SYSTEM_SPECIFICATION.md`](docs/SYSTEM_SPECIFICATION.md) (authoritative tab/Excel binding instructions)
 
-Place these in the repository (or make them available via authenticated Drive):
+## Authoritative references
 
-1. BALSONS ENTERPRISE DEVELOPMENT STANDARD — BEDS v3.0  
-2. BALSONS ERP & PAYROLL 2026 workbook (`.xlsx` / `.xlsm`)  
-3. INSTRUCTIONS / SYSTEM SPECIFICATION  
+| Reference | Status |
+|---|---|
+| SYSTEM SPECIFICATION / Instructions | Ingested → `docs/SYSTEM_SPECIFICATION.md` |
+| BEDS v3.0 | Still required |
+| Workbook `BALSONS ERP & PAYROLL 2026.xlsm` | Still required |
+| Logo `BALSONS LOGO MAIN NEW.png` | Still required |
 
 ## Technology lock
 
-HTML5 · CSS3 · Vanilla JavaScript ES6+ · SheetJS · IndexedDB · Chart.js · JSON · HTML/CSS Print · VBA · Microsoft Excel  
+HTML5 · CSS3 · Vanilla JavaScript ES6+ · SheetJS · IndexedDB · Chart.js · JSON · HTML/CSS Print · VBA · Microsoft Excel
+
+Bootstrap is **not** approved unless a formal BEDS exception is granted (SYSTEM SPEC mentions Bootstrap patterns; architecture prefers native CSS Grid/Flexbox).
 
 ## Documentation
 
